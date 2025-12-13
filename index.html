@@ -1,0 +1,1384 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>本買取申込 | BOOK BUYERS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #F5E6A3;
+      --primary-dark: #E8D68A;
+      --primary-light: #FFF9E6;
+      --accent: #D4A574;
+      --accent-dark: #B8956A;
+      --text: #3D3424;
+      --text-light: #6B5D4D;
+      --success: #7CB87C;
+      --danger: #E57373;
+      --white: #FFFFFF;
+      --shadow: 0 4px 20px rgba(61, 52, 36, 0.1);
+      --shadow-lg: 0 8px 40px rgba(61, 52, 36, 0.15);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Sans JP', sans-serif;
+      background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%);
+      min-height: 100vh;
+      color: var(--text);
+    }
+
+    /* Icon styling */
+    .icon {
+      width: 20px;
+      height: 20px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .icon svg {
+      width: 100%;
+      height: 100%;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+    }
+
+    .icon-lg svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    /* Header */
+    .header {
+      background: var(--white);
+      padding: 1rem 1.5rem;
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: var(--text);
+      letter-spacing: -0.5px;
+    }
+
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text);
+    }
+
+    .logo span {
+      color: var(--accent);
+    }
+
+    .cart-btn {
+      position: relative;
+      background: var(--primary);
+      border: none;
+      padding: 0.75rem 1.25rem;
+      border-radius: 50px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: 'Noto Sans JP', sans-serif;
+      font-weight: 500;
+      color: var(--text);
+      transition: all 0.3s ease;
+    }
+
+    .cart-btn:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+
+    .cart-badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: var(--accent);
+      color: var(--white);
+      font-size: 0.75rem;
+      font-weight: 700;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: pop 0.3s ease;
+    }
+
+    @keyframes pop {
+      0% { transform: scale(0); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+
+    /* Main Content */
+    .main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
+
+    .page-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--text);
+    }
+
+    .page-subtitle {
+      color: var(--text-light);
+      margin-bottom: 2rem;
+    }
+
+    /* Time Notice */
+    .time-notice {
+      background: var(--white);
+      padding: 1rem 1.5rem;
+      border-radius: 12px;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      box-shadow: var(--shadow);
+    }
+
+    .time-icon {
+      width: 44px;
+      height: 44px;
+      background: var(--primary-light);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent-dark);
+    }
+
+    .time-text {
+      font-size: 0.9rem;
+    }
+
+    .time-text strong {
+      color: var(--accent-dark);
+    }
+
+    /* Book Grid */
+    .book-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .book-card {
+      background: var(--white);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .book-card:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .book-card.sold-out {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    .book-card.sold-out::after {
+      content: '本日受付終了';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-15deg);
+      background: var(--danger);
+      color: var(--white);
+      padding: 0.5rem 2rem;
+      font-weight: 700;
+      font-size: 1rem;
+      border-radius: 4px;
+      z-index: 10;
+    }
+
+    .book-image {
+      width: 100%;
+      height: 320px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--white);
+      font-size: 3rem;
+      font-weight: 700;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .book-image::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(180deg, transparent 60%, rgba(0,0,0,0.3) 100%);
+    }
+
+    .book-image-placeholder {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      color: rgba(255,255,255,0.9);
+    }
+
+    .book-image-placeholder svg {
+      width: 48px;
+      height: 48px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.5;
+    }
+
+    .book-info {
+      padding: 1.25rem;
+    }
+
+    .book-title {
+      font-weight: 700;
+      font-size: 1rem;
+      margin-bottom: 0.75rem;
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .book-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .book-remaining {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+    }
+
+    .remaining-bar {
+      width: 60px;
+      height: 6px;
+      background: #eee;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .remaining-fill {
+      height: 100%;
+      background: var(--success);
+      border-radius: 3px;
+      transition: width 0.3s ease;
+    }
+
+    .remaining-fill.low {
+      background: var(--danger);
+    }
+
+    .book-limit {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      font-size: 0.8rem;
+      color: var(--text-light);
+      background: var(--primary-light);
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(61, 52, 36, 0.5);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal {
+      background: var(--white);
+      border-radius: 24px;
+      max-width: 500px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      transform: translateY(20px);
+      transition: transform 0.3s ease;
+    }
+
+    .modal-overlay.active .modal {
+      transform: translateY(0);
+    }
+
+    .modal-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-title {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 700;
+      font-size: 1.25rem;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-light);
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.5rem;
+      border-radius: 8px;
+    }
+
+    .modal-close:hover {
+      color: var(--text);
+      background: var(--primary-light);
+    }
+
+    .modal-body {
+      padding: 1.5rem;
+    }
+
+    .modal-book-info {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid #eee;
+    }
+
+    .modal-book-image {
+      width: 80px;
+      height: 120px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--white);
+      font-weight: 700;
+    }
+
+    .modal-book-details h3 {
+      font-size: 1rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .modal-book-details p {
+      font-size: 0.85rem;
+      color: var(--text-light);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .quantity-selector {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+      padding: 1rem;
+      background: var(--primary-light);
+      border-radius: 12px;
+    }
+
+    .quantity-label {
+      font-weight: 500;
+    }
+
+    .quantity-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .quantity-btn {
+      width: 40px;
+      height: 40px;
+      border: 2px solid var(--primary-dark);
+      background: var(--white);
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      font-weight: 500;
+    }
+
+    .quantity-btn:hover {
+      background: var(--primary);
+    }
+
+    .quantity-value {
+      width: 50px;
+      text-align: center;
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+
+    .add-to-cart-btn {
+      width: 100%;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+      color: var(--white);
+      border: none;
+      padding: 1rem;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: 'Noto Sans JP', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .add-to-cart-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(212, 165, 116, 0.4);
+    }
+
+    /* Cart Drawer */
+    .cart-drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 400px;
+      max-width: 100%;
+      background: var(--white);
+      box-shadow: -4px 0 30px rgba(0,0,0,0.1);
+      z-index: 1001;
+      transform: translateX(100%);
+      transition: transform 0.3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .cart-drawer.active {
+      transform: translateX(0);
+    }
+
+    .cart-drawer-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.3);
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .cart-drawer-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .cart-drawer-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .cart-drawer-title {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 700;
+      font-size: 1.25rem;
+    }
+
+    .cart-drawer-close {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.5rem;
+      border-radius: 8px;
+      font-size: 1.5rem;
+    }
+
+    .cart-drawer-close:hover {
+      background: var(--primary-light);
+      color: var(--text);
+    }
+
+    .cart-items {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1rem;
+    }
+
+    .cart-item {
+      display: flex;
+      gap: 1rem;
+      padding: 1rem;
+      background: var(--primary-light);
+      border-radius: 12px;
+      margin-bottom: 1rem;
+    }
+
+    .cart-item-image {
+      width: 60px;
+      height: 90px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--white);
+      font-weight: 700;
+      font-size: 0.75rem;
+    }
+
+    .cart-item-info {
+      flex: 1;
+    }
+
+    .cart-item-title {
+      font-weight: 500;
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .cart-item-qty {
+      font-size: 0.85rem;
+      color: var(--text-light);
+    }
+
+    .cart-item-remove {
+      background: none;
+      border: none;
+      color: var(--danger);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.5rem;
+      border-radius: 8px;
+      transition: background 0.2s;
+      font-size: 1.25rem;
+    }
+
+    .cart-item-remove:hover {
+      background: rgba(229, 115, 115, 0.1);
+    }
+
+    .cart-empty {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--text-light);
+    }
+
+    .cart-empty-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      opacity: 0.5;
+    }
+
+    .cart-footer {
+      padding: 1.5rem;
+      border-top: 1px solid #eee;
+    }
+
+    .cart-total {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+
+    .checkout-btn {
+      width: 100%;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+      color: var(--white);
+      border: none;
+      padding: 1rem;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: 'Noto Sans JP', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .checkout-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(212, 165, 116, 0.4);
+    }
+
+    /* Checkout Modal */
+    .checkout-form .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .checkout-form label {
+      display: block;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    .checkout-form input,
+    .checkout-form select {
+      width: 100%;
+      padding: 0.875rem 1rem;
+      border: 2px solid #eee;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-family: 'Noto Sans JP', sans-serif;
+      transition: border-color 0.2s;
+    }
+
+    .checkout-form input:focus,
+    .checkout-form select:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .submit-btn {
+      width: 100%;
+      background: linear-gradient(135deg, var(--success) 0%, #5a9a5a 100%);
+      color: var(--white);
+      border: none;
+      padding: 1rem;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: 'Noto Sans JP', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(124, 184, 124, 0.4);
+    }
+
+    .cart-summary {
+      background: var(--primary-light);
+      padding: 1rem;
+      border-radius: 12px;
+      margin-bottom: 1.5rem;
+    }
+
+    .cart-summary-title {
+      font-weight: 700;
+      font-size: 0.9rem;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .cart-summary-item {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .cart-summary-item:last-child {
+      border-bottom: none;
+    }
+
+    /* Success Animation */
+    .success-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255, 255, 255, 0.95);
+      z-index: 2000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .success-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .success-icon {
+      width: 100px;
+      height: 100px;
+      background: var(--success);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--white);
+      margin-bottom: 1.5rem;
+      animation: successPop 0.5s ease;
+      font-size: 3rem;
+    }
+
+    @keyframes successPop {
+      0% { transform: scale(0); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+
+    .success-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .success-text {
+      color: var(--text-light);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .page-title {
+        font-size: 1.5rem;
+      }
+
+      .book-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+      }
+
+      .book-image {
+        height: 200px;
+      }
+
+      .book-info {
+        padding: 1rem;
+      }
+
+      .book-title {
+        font-size: 0.9rem;
+      }
+
+      .cart-drawer {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .book-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .book-image {
+        height: 280px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-content">
+      <div class="logo">
+        <div class="logo-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+          </svg>
+        </div>
+        BOOK <span>BUYERS</span>
+      </div>
+      <button class="cart-btn" onclick="toggleCart()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="8" cy="21" r="1"></circle>
+          <circle cx="19" cy="21" r="1"></circle>
+          <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path>
+        </svg>
+        カート
+        <span class="cart-badge" id="cartBadge" style="display: none;">0</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="main">
+    <h1 class="page-title">買取受付中の本</h1>
+    <p class="page-subtitle">タップして申込カートに追加してください</p>
+
+    <div class="time-notice">
+      <div class="time-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+      </div>
+      <div class="time-text">
+        受付時間：<strong>毎日 9:00 〜 24:00</strong><br>
+        時間外は申込フォームを送信できません
+      </div>
+    </div>
+
+    <div class="book-grid" id="bookGrid">
+      <!-- Book cards will be rendered here -->
+    </div>
+  </main>
+
+  <!-- Book Detail Modal -->
+  <div class="modal-overlay" id="bookModal">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="16"></line>
+            <line x1="8" y1="12" x2="16" y2="12"></line>
+          </svg>
+          カートに追加
+        </div>
+        <button class="modal-close" onclick="closeBookModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-book-info">
+          <div class="modal-book-image" id="modalBookImage"></div>
+          <div class="modal-book-details">
+            <h3 id="modalBookTitle">本のタイトル</h3>
+            <p>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+              </svg>
+              <span id="modalBookRemaining">残り受付: 10冊</span>
+            </p>
+            <p>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+              <span id="modalBookLimit">1人上限: 3冊/日</span>
+            </p>
+          </div>
+        </div>
+
+        <div class="quantity-selector">
+          <span class="quantity-label">購入冊数</span>
+          <div class="quantity-controls">
+            <button class="quantity-btn" onclick="changeQuantity(-1)">−</button>
+            <span class="quantity-value" id="quantityValue">1</span>
+            <button class="quantity-btn" onclick="changeQuantity(1)">+</button>
+          </div>
+        </div>
+
+        <button class="add-to-cart-btn" onclick="addToCart()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="8" cy="21" r="1"></circle>
+            <circle cx="19" cy="21" r="1"></circle>
+            <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path>
+          </svg>
+          カートに追加
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cart Drawer Overlay -->
+  <div class="cart-drawer-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+
+  <!-- Cart Drawer -->
+  <div class="cart-drawer" id="cartDrawer">
+    <div class="cart-drawer-header">
+      <div class="cart-drawer-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="8" cy="21" r="1"></circle>
+          <circle cx="19" cy="21" r="1"></circle>
+          <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path>
+        </svg>
+        カート
+      </div>
+      <button class="cart-drawer-close" onclick="toggleCart()">×</button>
+    </div>
+    <div class="cart-items" id="cartItems">
+      <div class="cart-empty">
+        <div class="cart-empty-icon">🛒</div>
+        <div>カートは空です</div>
+      </div>
+    </div>
+    <div class="cart-footer">
+      <div class="cart-total">
+        <span>合計冊数</span>
+        <span id="cartTotal">0 冊</span>
+      </div>
+      <button class="checkout-btn" onclick="openCheckoutModal()">
+        申込情報を入力 →
+      </button>
+    </div>
+  </div>
+
+  <!-- Checkout Modal -->
+  <div class="modal-overlay" id="checkoutModal">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+            <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+          </svg>
+          申込情報入力
+        </div>
+        <button class="modal-close" onclick="closeCheckoutModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="cart-summary" id="checkoutSummary">
+          <div class="cart-summary-title">📚 申込内容</div>
+        </div>
+
+        <form class="checkout-form" onsubmit="submitOrder(event)">
+          <div class="form-group">
+            <label>会員番号 *</label>
+            <input type="text" id="memberId" placeholder="例: M12345" required>
+          </div>
+          <div class="form-group">
+            <label>お名前 *</label>
+            <input type="text" id="memberName" placeholder="例: 山田太郎" required>
+          </div>
+          <div class="form-group">
+            <label>購入地域（都道府県）*</label>
+            <select id="prefecture" required>
+              <option value="">選択してください</option>
+              <option value="北海道">北海道</option>
+              <option value="青森県">青森県</option>
+              <option value="岩手県">岩手県</option>
+              <option value="宮城県">宮城県</option>
+              <option value="秋田県">秋田県</option>
+              <option value="山形県">山形県</option>
+              <option value="福島県">福島県</option>
+              <option value="茨城県">茨城県</option>
+              <option value="栃木県">栃木県</option>
+              <option value="群馬県">群馬県</option>
+              <option value="埼玉県">埼玉県</option>
+              <option value="千葉県">千葉県</option>
+              <option value="東京都">東京都</option>
+              <option value="神奈川県">神奈川県</option>
+              <option value="新潟県">新潟県</option>
+              <option value="富山県">富山県</option>
+              <option value="石川県">石川県</option>
+              <option value="福井県">福井県</option>
+              <option value="山梨県">山梨県</option>
+              <option value="長野県">長野県</option>
+              <option value="岐阜県">岐阜県</option>
+              <option value="静岡県">静岡県</option>
+              <option value="愛知県">愛知県</option>
+              <option value="三重県">三重県</option>
+              <option value="滋賀県">滋賀県</option>
+              <option value="京都府">京都府</option>
+              <option value="大阪府">大阪府</option>
+              <option value="兵庫県">兵庫県</option>
+              <option value="奈良県">奈良県</option>
+              <option value="和歌山県">和歌山県</option>
+              <option value="鳥取県">鳥取県</option>
+              <option value="島根県">島根県</option>
+              <option value="岡山県">岡山県</option>
+              <option value="広島県">広島県</option>
+              <option value="山口県">山口県</option>
+              <option value="徳島県">徳島県</option>
+              <option value="香川県">香川県</option>
+              <option value="愛媛県">愛媛県</option>
+              <option value="高知県">高知県</option>
+              <option value="福岡県">福岡県</option>
+              <option value="佐賀県">佐賀県</option>
+              <option value="長崎県">長崎県</option>
+              <option value="熊本県">熊本県</option>
+              <option value="大分県">大分県</option>
+              <option value="宮崎県">宮崎県</option>
+              <option value="鹿児島県">鹿児島県</option>
+              <option value="沖縄県">沖縄県</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>書店名 *</label>
+            <input type="text" id="storeName" placeholder="例: 紀伊國屋書店" required>
+          </div>
+          <div class="form-group">
+            <label>支店名 *</label>
+            <input type="text" id="branchName" placeholder="例: 新宿本店" required>
+          </div>
+          <button type="submit" class="submit-btn">
+            ✓ 申込を送信する
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success Overlay -->
+  <div class="success-overlay" id="successOverlay">
+    <div class="success-icon">✓</div>
+    <div class="success-title">申込完了！</div>
+    <div class="success-text">ご申込ありがとうございます</div>
+  </div>
+
+  <script>
+    // Book cover colors for visual distinction
+    const bookColors = [
+      'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+      'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+      'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+      'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
+      'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)',
+      'linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)',
+      'linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)'
+    ];
+
+    // Sample book data (will be fetched from API)
+    const books = [
+      {
+        id: 1,
+        title: '人工知能は人間を超えるか ディープラーニングの先にあるもの',
+        color: bookColors[0],
+        remaining: 15,
+        maxPerDay: 20,
+        limitPerPerson: 3
+      },
+      {
+        id: 2,
+        title: 'ゼロから作るDeep Learning',
+        color: bookColors[1],
+        remaining: 3,
+        maxPerDay: 10,
+        limitPerPerson: 2
+      },
+      {
+        id: 3,
+        title: '嫌われる勇気 自己啓発の源流「アドラー」の教え',
+        color: bookColors[2],
+        remaining: 8,
+        maxPerDay: 15,
+        limitPerPerson: 3
+      },
+      {
+        id: 4,
+        title: 'サピエンス全史 文明の構造と人類の幸福',
+        color: bookColors[3],
+        remaining: 0,
+        maxPerDay: 10,
+        limitPerPerson: 2
+      },
+      {
+        id: 5,
+        title: 'FACTFULNESS ファクトフルネス',
+        color: bookColors[4],
+        remaining: 12,
+        maxPerDay: 20,
+        limitPerPerson: 4
+      }
+    ];
+
+    let cart = [];
+    let selectedBook = null;
+    let quantity = 1;
+
+    // Get short title for display
+    function getShortTitle(title) {
+      return title.length > 10 ? title.substring(0, 10) + '...' : title;
+    }
+
+    // Render books
+    function renderBooks() {
+      const grid = document.getElementById('bookGrid');
+      grid.innerHTML = books.map(book => `
+        <div class="book-card ${book.remaining === 0 ? 'sold-out' : ''}" onclick="openBookModal(${book.id})">
+          <div class="book-image" style="background: ${book.color};">
+            <div class="book-image-placeholder">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+              </svg>
+              <span style="font-size: 0.85rem; font-weight: 500;">${getShortTitle(book.title)}</span>
+            </div>
+          </div>
+          <div class="book-info">
+            <div class="book-title">${book.title}</div>
+            <div class="book-meta">
+              <div class="book-remaining">
+                <div class="remaining-bar">
+                  <div class="remaining-fill ${book.remaining / book.maxPerDay < 0.3 ? 'low' : ''}" 
+                       style="width: ${(book.remaining / book.maxPerDay) * 100}%"></div>
+                </div>
+                <span>残${book.remaining}冊</span>
+              </div>
+              <div class="book-limit">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                ${book.limitPerPerson}冊/日
+              </div>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Open book modal
+    function openBookModal(bookId) {
+      selectedBook = books.find(b => b.id === bookId);
+      quantity = 1;
+
+      const modalImage = document.getElementById('modalBookImage');
+      modalImage.style.background = selectedBook.color;
+      modalImage.textContent = getShortTitle(selectedBook.title);
+      
+      document.getElementById('modalBookTitle').textContent = selectedBook.title;
+      document.getElementById('modalBookRemaining').textContent = `残り受付: ${selectedBook.remaining}冊`;
+      document.getElementById('modalBookLimit').textContent = `1人上限: ${selectedBook.limitPerPerson}冊/日`;
+      document.getElementById('quantityValue').textContent = quantity;
+
+      document.getElementById('bookModal').classList.add('active');
+    }
+
+    function closeBookModal() {
+      document.getElementById('bookModal').classList.remove('active');
+    }
+
+    // Quantity controls
+    function changeQuantity(delta) {
+      const newQty = quantity + delta;
+      if (newQty >= 1 && newQty <= selectedBook.limitPerPerson && newQty <= selectedBook.remaining) {
+        quantity = newQty;
+        document.getElementById('quantityValue').textContent = quantity;
+      }
+    }
+
+    // Cart functions
+    function addToCart() {
+      const existingItem = cart.find(item => item.book.id === selectedBook.id);
+      if (existingItem) {
+        const newQty = existingItem.quantity + quantity;
+        if (newQty <= selectedBook.limitPerPerson) {
+          existingItem.quantity = newQty;
+        } else {
+          alert(`この本は1日${selectedBook.limitPerPerson}冊までです`);
+          return;
+        }
+      } else {
+        cart.push({ book: selectedBook, quantity: quantity });
+      }
+      updateCartUI();
+      closeBookModal();
+    }
+
+    function removeFromCart(bookId) {
+      cart = cart.filter(item => item.book.id !== bookId);
+      updateCartUI();
+    }
+
+    function updateCartUI() {
+      const badge = document.getElementById('cartBadge');
+      const total = cart.reduce((sum, item) => sum + item.quantity, 0);
+      
+      if (total > 0) {
+        badge.style.display = 'flex';
+        badge.textContent = total;
+      } else {
+        badge.style.display = 'none';
+      }
+
+      const cartItems = document.getElementById('cartItems');
+      if (cart.length === 0) {
+        cartItems.innerHTML = `
+          <div class="cart-empty">
+            <div class="cart-empty-icon">🛒</div>
+            <div>カートは空です</div>
+          </div>
+        `;
+      } else {
+        cartItems.innerHTML = cart.map(item => `
+          <div class="cart-item">
+            <div class="cart-item-image" style="background: ${item.book.color};">${getShortTitle(item.book.title)}</div>
+            <div class="cart-item-info">
+              <div class="cart-item-title">${item.book.title}</div>
+              <div class="cart-item-qty">${item.quantity}冊</div>
+            </div>
+            <button class="cart-item-remove" onclick="removeFromCart(${item.book.id})">×</button>
+          </div>
+        `).join('');
+      }
+
+      document.getElementById('cartTotal').textContent = `${total} 冊`;
+    }
+
+    function toggleCart() {
+      document.getElementById('cartDrawer').classList.toggle('active');
+      document.getElementById('cartOverlay').classList.toggle('active');
+    }
+
+    // Checkout
+    function openCheckoutModal() {
+      if (cart.length === 0) {
+        alert('カートに本を追加してください');
+        return;
+      }
+
+      const summary = document.getElementById('checkoutSummary');
+      summary.innerHTML = `
+        <div class="cart-summary-title">📚 申込内容</div>
+        ${cart.map(item => `
+          <div class="cart-summary-item">
+            <span>${item.book.title}</span>
+            <span>${item.quantity}冊</span>
+          </div>
+        `).join('')}
+      `;
+
+      toggleCart();
+      document.getElementById('checkoutModal').classList.add('active');
+    }
+
+    function closeCheckoutModal() {
+      document.getElementById('checkoutModal').classList.remove('active');
+    }
+
+    function submitOrder(e) {
+      e.preventDefault();
+      
+      // Get form data
+      const formData = {
+        memberId: document.getElementById('memberId').value,
+        memberName: document.getElementById('memberName').value,
+        prefecture: document.getElementById('prefecture').value,
+        storeName: document.getElementById('storeName').value,
+        branchName: document.getElementById('branchName').value,
+        items: cart.map(item => ({
+          bookId: item.book.id,
+          title: item.book.title,
+          quantity: item.quantity
+        }))
+      };
+
+      console.log('Submitting order:', formData);
+
+      // Show success (in real app, this would be after API response)
+      closeCheckoutModal();
+      document.getElementById('successOverlay').classList.add('active');
+      
+      // Reset after 2 seconds
+      setTimeout(() => {
+        document.getElementById('successOverlay').classList.remove('active');
+        cart = [];
+        updateCartUI();
+        document.querySelector('.checkout-form').reset();
+      }, 2000);
+    }
+
+    // Click outside to close modals
+    document.getElementById('bookModal').addEventListener('click', function(e) {
+      if (e.target === this) closeBookModal();
+    });
+
+    document.getElementById('checkoutModal').addEventListener('click', function(e) {
+      if (e.target === this) closeCheckoutModal();
+    });
+
+    // Initialize
+    renderBooks();
+  </script>
+</body>
+</html>
