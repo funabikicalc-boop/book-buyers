@@ -1247,6 +1247,30 @@
     // API URL
     const API_URL = 'https://script.google.com/macros/s/AKfycbwRDmvv7VPUDtvmuEmazkV659fKd__kweTRqWMbsrEqCCadqfZsqGyPFML4a07eBbw7/exec';
     
+    // Google Drive画像URLをSafari対応形式に変換
+    function convertDriveImageUrl(url) {
+      if (!url) return null;
+      
+      // drive.google.com/thumbnail?id=XXX 形式
+      let match = url.match(/drive\.google\.com\/thumbnail\?id=([^&]+)/);
+      if (match) {
+        return `https://lh3.googleusercontent.com/d/${match[1]}=w800`;
+      }
+      
+      // drive.google.com/uc?id=XXX 形式
+      match = url.match(/drive\.google\.com\/uc\?.*id=([^&]+)/);
+      if (match) {
+        return `https://lh3.googleusercontent.com/d/${match[1]}=w800`;
+      }
+      
+      // 既にlh3形式ならそのまま
+      if (url.includes('lh3.googleusercontent.com')) {
+        return url;
+      }
+      
+      return url;
+    }
+    
     // 受付時間設定
     const RECEPTION_START_HOUR = 9;
     const RECEPTION_END_HOUR = 24;
@@ -1310,7 +1334,11 @@
         const result = await response.json();
         
         if (result.success) {
-          books = result.books;
+          // 画像URLをSafari対応形式に変換
+          books = result.books.map(book => ({
+            ...book,
+            imageUrl: convertDriveImageUrl(book.imageUrl)
+          }));
           renderBookDropdown();
           renderBooks();
           
