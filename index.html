@@ -1055,7 +1055,20 @@
       </div>
       <div class="time-text">
         受付時間：<strong>毎日 9:00 〜 24:00</strong><br>
-        時間外は申込フォームを送信できません
+        <span id="timeStatus">時間外は申込フォームを送信できません</span>
+      </div>
+    </div>
+
+    <!-- 受付時間外の警告 -->
+    <div class="alert alert-error" id="outsideHoursAlert" style="display: none;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="8" x2="12" y2="12"></line>
+        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+      </svg>
+      <div>
+        <strong>現在は受付時間外です</strong><br>
+        受付時間（9:00〜24:00）になりましたらお申込みいただけます。
       </div>
     </div>
 
@@ -1233,6 +1246,52 @@
   <script>
     // API URL
     const API_URL = 'https://script.google.com/macros/s/AKfycbwRDmvv7VPUDtvmuEmazkV659fKd__kweTRqWMbsrEqCCadqfZsqGyPFML4a07eBbw7/exec';
+    
+    // 受付時間設定
+    const RECEPTION_START_HOUR = 9;
+    const RECEPTION_END_HOUR = 24;
+    
+    // 受付時間内かチェック
+    function isWithinReceptionHours() {
+      const now = new Date();
+      const hour = now.getHours();
+      return hour >= RECEPTION_START_HOUR && hour < RECEPTION_END_HOUR;
+    }
+    
+    // 受付時間外の表示を更新
+    function updateReceptionStatus() {
+      const isOpen = isWithinReceptionHours();
+      const alertElement = document.getElementById('outsideHoursAlert');
+      const statusElement = document.getElementById('timeStatus');
+      
+      if (isOpen) {
+        alertElement.style.display = 'none';
+        statusElement.innerHTML = '現在受付中です';
+        statusElement.style.color = '#5a9a5a';
+      } else {
+        alertElement.style.display = 'flex';
+        statusElement.innerHTML = '<span style="color: #c74747;">現在は受付時間外です</span>';
+      }
+      
+      // カートに追加ボタンの状態を更新
+      document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
+        if (!isOpen) {
+          btn.disabled = true;
+          btn.style.opacity = '0.5';
+          btn.style.cursor = 'not-allowed';
+        }
+      });
+      
+      // 送信ボタンの状態を更新
+      const submitBtn = document.getElementById('submitBtn');
+      if (submitBtn && !isOpen) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = '受付時間外';
+      }
+    }
+    
+    // 1分ごとに受付時間をチェック
+    setInterval(updateReceptionStatus, 60000);
 
     let books = [];
     let cart = [];
@@ -1258,6 +1317,9 @@
           document.getElementById('loadingIndicator').style.display = 'none';
           document.getElementById('bookFilter').style.display = 'block';
           document.getElementById('bookGrid').style.display = 'grid';
+          
+          // 受付時間の状態を更新
+          updateReceptionStatus();
         } else {
           showError('商品情報の取得に失敗しました');
         }
@@ -1577,6 +1639,13 @@
       
       const submitBtn = document.getElementById('submitBtn');
       const checkoutError = document.getElementById('checkoutError');
+      
+      // 受付時間チェック
+      if (!isWithinReceptionHours()) {
+        checkoutError.textContent = '現在は受付時間外です（9:00〜24:00）';
+        checkoutError.style.display = 'block';
+        return;
+      }
       
       // Validate member
       if (!validatedMember) {
