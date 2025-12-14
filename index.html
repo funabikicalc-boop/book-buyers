@@ -388,8 +388,26 @@
     }
 
     .book-stat.warning {
-      background: rgba(229, 115, 115, 0.2);
+      background: rgba(255, 183, 77, 0.3);
+      color: #e65100;
+    }
+
+    .book-stat.danger {
+      background: rgba(229, 115, 115, 0.3);
       color: #c74747;
+      font-weight: 700;
+    }
+
+    .book-stat.critical {
+      background: rgba(229, 115, 115, 0.5);
+      color: #b71c1c;
+      font-weight: 700;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
     }
 
     .book-stat svg {
@@ -1304,6 +1322,18 @@
         const limitText = book.personLimit ? `${book.personLimit}冊/日` : '上限なし';
         const remainingText = book.remaining !== null ? `残り${book.remaining}冊` : '受付中';
         
+        // 残り冊数に応じたクラス
+        let remainingClass = '';
+        if (book.remaining !== null && book.remaining > 0) {
+          if (book.remaining <= 3) {
+            remainingClass = 'critical';
+          } else if (book.remaining <= 5) {
+            remainingClass = 'danger';
+          } else if (book.remaining <= 10) {
+            remainingClass = 'warning';
+          }
+        }
+        
         return `
           <div class="book-card ${isSoldOut ? 'sold-out' : ''}" data-book-id="${book.id}">
             <div class="book-image">
@@ -1322,7 +1352,7 @@
                 ${book.link ? `<a href="${book.link}" target="_blank">${book.title}</a>` : book.title}
               </div>
               <div class="book-stats">
-                <span class="book-stat ${book.remaining !== null && book.remaining <= 3 && book.remaining > 0 ? 'warning' : ''}">
+                <span class="book-stat ${remainingClass}">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
                   </svg>
