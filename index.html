@@ -1153,15 +1153,7 @@
         <form class="checkout-form" onsubmit="submitOrder(event)">
           <div class="form-group">
             <label>会員番号 *</label>
-            <input type="text" id="memberId" placeholder="例: M12345" required 
-                   inputmode="latin" 
-                   pattern="[A-Za-z0-9]+" 
-                   oninput="this.value = this.value.replace(/[^A-Za-z0-9]/g, '')"
-                   onblur="validateMember()"
-                   style="ime-mode: disabled;">
-            <div class="input-hint">※半角英数字で入力してください</div>
-            <div class="input-error" id="memberIdError" style="display: none;"></div>
-            <div class="input-success" id="memberIdSuccess" style="display: none; color: var(--success); font-size: 0.75rem; margin-top: 0.25rem;">✓ 会員番号を確認しました</div>
+            <input type="text" id="memberId" placeholder="例: M12345" required>
           </div>
           <div class="form-group">
             <label>お名前 *</label>
@@ -1178,7 +1170,7 @@
               <option value="秋田県">秋田県</option>
               <option value="山形県">山形県</option>
               <option value="福島県">福島県</option>
-              <option value="茨城県">茨城県</option>
+              <option value="茨城">茨城県</option>
               <option value="栃木県">栃木県</option>
               <option value="群馬県">群馬県</option>
               <option value="埼玉県">埼玉県</option>
@@ -1320,7 +1312,6 @@
     let books = [];
     let cart = [];
     let currentFilter = '';
-    let validatedMember = null;
 
     // Initialize
     async function init() {
@@ -1599,40 +1590,6 @@
       document.getElementById('cartOverlay').classList.toggle('active');
     }
 
-    // Validate member
-    async function validateMember() {
-      const memberId = document.getElementById('memberId').value.trim();
-      const memberIdError = document.getElementById('memberIdError');
-      const memberIdSuccess = document.getElementById('memberIdSuccess');
-      
-      memberIdError.style.display = 'none';
-      memberIdSuccess.style.display = 'none';
-      
-      if (!memberId) {
-        validatedMember = null;
-        return;
-      }
-      
-      try {
-        const response = await fetch(`${API_URL}?action=getMember&memberId=${encodeURIComponent(memberId)}`);
-        const result = await response.json();
-        
-        if (result.success) {
-          memberIdSuccess.style.display = 'block';
-          validatedMember = { memberId: memberId };
-        } else {
-          memberIdError.textContent = result.error;
-          memberIdError.style.display = 'block';
-          validatedMember = null;
-        }
-      } catch (error) {
-        console.error('Error validating member:', error);
-        memberIdError.textContent = '会員情報の確認に失敗しました';
-        memberIdError.style.display = 'block';
-        validatedMember = null;
-      }
-    }
-
     // Open checkout modal
     function openCheckoutModal() {
       if (cart.length === 0) {
@@ -1675,13 +1632,6 @@
         return;
       }
       
-      // Validate member
-      if (!validatedMember) {
-        checkoutError.textContent = '会員番号を確認してください';
-        checkoutError.style.display = 'block';
-        return;
-      }
-      
       submitBtn.disabled = true;
       submitBtn.textContent = '送信中...';
       
@@ -1715,7 +1665,6 @@
             cart = [];
             updateCartUI();
             document.querySelector('.checkout-form').reset();
-            validatedMember = null;
             loadBooks(); // Reload to update remaining counts
           }, 2000);
         } else {
